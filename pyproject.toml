@@ -1,0 +1,65 @@
+[build-system]
+requires = ["hatchling==1.27.0"]
+build-backend = "hatchling.build"
+
+[project]
+name = "logredact"
+dynamic = ["version"]
+description = "Strip secrets and personal data from logs before you share them, with consistent pseudonyms that keep logs debuggable."
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "Luke Taaffe", email = "luke.taaffe0026@gmail.com" }]
+requires-python = ">=3.11"
+keywords = ["logs", "redaction", "secrets", "pii", "privacy", "pseudonymization"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Intended Audience :: System Administrators",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Security",
+    "Topic :: System :: Logging",
+    "Typing :: Typed",
+]
+dependencies = []
+
+[project.scripts]
+logredact = "logredact.cli:main"
+
+[dependency-groups]
+dev = [
+    "pytest==8.4.1",
+    "pytest-cov==6.2.1",
+    "hypothesis==6.131.0",
+    "ruff==0.12.7",
+    "mypy==1.17.1",
+    "pip-audit==2.9.0",
+]
+
+[tool.hatch.version]
+path = "src/logredact/__init__.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/logredact"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra --strict-markers"
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "SIM", "RUF", "PTH", "C4"]
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+files = ["src"]
