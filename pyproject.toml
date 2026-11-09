@@ -35,7 +35,7 @@ logredact = "logredact.cli:main"
 dev = [
     "pytest==9.0.3",
     "pytest-cov==6.2.1",
-    "hypothesis==6.131.0",
+    "hypothesis==6.170.15",
     "ruff==0.12.7",
     "mypy==1.17.1",
     "pip-audit==2.9.0",
