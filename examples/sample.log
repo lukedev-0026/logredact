@@ -1,0 +1,9 @@
+2026-11-09T08:00:01Z INFO  api    request id=7f1c path=/login client=203.0.113.24 user=maria.lopez@example.com
+2026-11-09T08:00:01Z WARN  api    login failed for maria.lopez@example.com from 203.0.113.24 (attempt 2)
+2026-11-09T08:00:02Z DEBUG db     connecting to postgres://billing:Tr0ub4dor-3@db-primary.internal:5432/billing
+2026-11-09T08:00:03Z INFO  pay    charge ok order=ORD-48213 card=4111 1111 1111 1111 amount=42.00
+2026-11-09T08:00:04Z DEBUG http   > Authorization: Bearer dGhpcy1pcy1ub3QtYS1yZWFsLXRva2Vu
+2026-11-09T08:00:05Z INFO  edge   upstream fd00:1:2::8a2e:370:7334 replaced by fd12:3456:789a::1 for client 198.51.100.77
+2026-11-09T08:00:06Z ERROR worker config dump: {"smtp_password": "correct-horse-battery", "retries": 3}
+2026-11-09T08:00:07Z INFO  api    request id=7f1d path=/orders client=203.0.113.24 user=maria.lopez@example.com
+2026-11-09T08:00:08Z INFO  health liveness ok on 127.0.0.1:8080

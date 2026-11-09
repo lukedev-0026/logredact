@@ -1,0 +1,11 @@
+# Example settings: run `logredact --config examples/logredact.toml examples/sample.log`.
+
+# Keep the shared ops mailbox readable.
+allow = ["ops@example.com"]
+
+[[rules]]
+name = "order-id"
+description = "Shop order numbers"
+pattern = 'ORD-\d{5}'
+action = "pseudonymize"
+category = "pii"

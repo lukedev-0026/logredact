@@ -1,0 +1,9 @@
+2026-11-09T08:00:01Z INFO  api    request id=7f1c path=/login client=246.156.195.217 user=user-f46d89361b@redacted.invalid
+2026-11-09T08:00:01Z WARN  api    login failed for user-f46d89361b@redacted.invalid from 246.156.195.217 (attempt 2)
+2026-11-09T08:00:02Z DEBUG db     connecting to postgres://billing:[REDACTED:url-credentials]@db-primary.internal:5432/billing
+2026-11-09T08:00:03Z INFO  pay    charge ok order=order-id-1a85d794f6 card=[REDACTED:card-number] amount=42.00
+2026-11-09T08:00:04Z DEBUG http   > Authorization: Bearer [REDACTED:authorization-header]
+2026-11-09T08:00:05Z INFO  edge   upstream 2001:db8:d5cc:e6bc:dac8:30af:982a:50db replaced by 2001:db8:d250:afc2:5ec2:3296:886a:2918 for client 251.194.123.105
+2026-11-09T08:00:06Z ERROR worker config dump: {"smtp_password": "[REDACTED:assigned-secret]", "retries": 3}
+2026-11-09T08:00:07Z INFO  api    request id=7f1d path=/orders client=246.156.195.217 user=user-f46d89361b@redacted.invalid
+2026-11-09T08:00:08Z INFO  health liveness ok on 127.0.0.1:8080
