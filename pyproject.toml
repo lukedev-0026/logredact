@@ -48,8 +48,8 @@ path = "src/logredact/__init__.py"
 packages = ["src/logredact"]
 
 [tool.pytest.ini_options]
-testpaths = ["tests"]
-addopts = "-ra --strict-markers"
+testpaths = ["tests", "src"]
+addopts = "-ra --strict-markers --doctest-modules"
 
 [tool.ruff]
 line-length = 100
