@@ -1,0 +1,6 @@
+- id: logredact
+  name: logredact
+  description: Block commits of log or text files that contain secrets or personal data.
+  entry: logredact --check
+  language: python
+  files: \.(log|txt|out)$
