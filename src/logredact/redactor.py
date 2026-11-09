@@ -16,6 +16,10 @@ MAX_BLOCK_LINES = 500
 
 _BLOCK_START = re.compile(r"-----BEGIN [A-Z0-9 ]*PRIVATE KEY-----")
 _BLOCK_END = re.compile(r"-----END [A-Z0-9 ]*PRIVATE KEY-----")
+#: Upper bound on restarts while matching one piece of text.
+_MAX_RESTARTS = 64
+#: Output of an earlier redaction; never treated as a new finding.
+_MARKER = re.compile(r"\[REDACTED:[a-z0-9-]+\]")
 #: Fills already-matched spans. No detector matches across a line break
 #: except the private-key detector, which runs first.
 _MASK = "\n"
@@ -68,20 +72,31 @@ class Redactor:
 
         Detectors run in priority order. Each one sees the text with earlier
         matches masked out (replaced by line breaks of the same length), so
-        a value cannot hide a neighbour it touches and offsets stay valid.
+        offsets stay valid. Masking creates a boundary where there was none,
+        which can expose a value that was glued to the masked one. So after
+        any detector masks something, matching restarts from the
+        highest-priority detector; it ends when a full pass finds nothing.
         """
         taken: list[Match] = []
         masked = text
-        for detector in self.detectors:
-            found = [m for m in detector.find(masked) if not self._allowed(m.value)]
+        restarts = 0
+        index = 0
+        while index < len(self.detectors):
+            found = [m for m in self.detectors[index].find(masked) if not self._allowed(m.value)]
             for match in found:
                 taken.append(match)
-                masked = (
-                    masked[: match.start] + _MASK * (match.end - match.start) + masked[match.end :]
-                )
+                width = match.end - match.start
+                masked = masked[: match.start] + _MASK * width + masked[match.end :]
+            if found and index > 0 and restarts < _MAX_RESTARTS:
+                restarts += 1
+                index = 0
+            else:
+                index += 1
         return sorted(taken, key=lambda m: m.start)
 
     def _allowed(self, value: str) -> bool:
+        if _MARKER.fullmatch(value):
+            return True
         return value in self.allow or any(p.fullmatch(value) for p in self.allow_patterns)
 
     def replacement(self, match: Match) -> str:

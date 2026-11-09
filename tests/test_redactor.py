@@ -119,7 +119,8 @@ _log_text = st.lists(
         st.text(alphabet=st.characters(codec="utf-8"), max_size=30),
         st.sampled_from(
             ["bob@example.com", "10.20.30.40", "fe80::1:2", "password=hunter22",
-             "4111 1111 1111 1111", " ", "\n", ":", "@", "."]
+             "4111 1111 1111 1111", "https://u:pw1234@db.example",
+             "Authorization: Bearer abcdefgh1", " ", "\n", ":", "@", "."]
         ),
     ),
     max_size=12,
@@ -140,3 +141,16 @@ def test_streaming_equals_whole_text_for_single_lines(text: str) -> None:
     line = text.replace("\n", " ").replace("\r", " ")
     r = redactor()
     assert "".join(x.text for x in r.redact_lines([line])) == r.redact(line).text
+
+
+def test_check_is_clean_after_redaction() -> None:
+    r = redactor()
+    once = r.redact("postgres://app:s3cret@db.internal/x password=hunter22").text
+    assert r.redact(once).findings == []
+
+
+@settings(max_examples=300, deadline=None)
+@given(_log_text)
+def test_second_pass_finds_nothing(text: str) -> None:
+    r = redactor()
+    assert r.redact(r.redact(text).text).findings == []
