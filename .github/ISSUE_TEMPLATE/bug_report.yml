@@ -1,0 +1,35 @@
+name: Bug report
+description: Something logredact misses, redacts wrongly, or crashes on.
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: "**Never paste real secrets or personal data.** Replace them with made-up values of the same shape. To report a leak privately, use the Security tab instead."
+  - type: textarea
+    id: input
+    attributes:
+      label: Synthetic input
+      description: A minimal made-up line that shows the problem.
+      render: text
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: What logredact did
+      render: text
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: logredact version
+      placeholder: output of `logredact --version`
+    validations:
+      required: true

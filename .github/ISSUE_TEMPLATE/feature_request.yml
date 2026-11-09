@@ -1,0 +1,15 @@
+name: Feature request
+description: A new detector, output option or integration.
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What data should be caught, or what workflow should be easier? Use made-up examples only.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposal
