@@ -51,8 +51,9 @@ jobs:
         with:
           python-version: "3.12"
       - run: uv sync --locked
-      - run: uv export --format requirements-txt --no-dev --no-emit-project -o runtime-requirements.txt
-      - run: uv run pip-audit --disable-pip -r runtime-requirements.txt
+      # logredact has no runtime dependencies, so audit the whole locked
+      # environment, development tools included.
+      - run: uv run pip-audit --skip-editable
 
   self-check:
     name: Check the redacted sample is clean
