@@ -231,10 +231,10 @@ BUILTIN_DETECTORS: tuple[Detector, ...] = (
        r"([A-Za-z0-9._~+/=-]{8,})",
        flags=re.IGNORECASE, group=1),
     _d("url-credentials", S, "Passwords embedded in URLs (scheme://user:password@host)",
-       r"\b[A-Za-z][A-Za-z0-9+.-]*://[^\s:/@]+:([^\s/@]+)@", group=1),
+       r"\b[A-Za-z][A-Za-z0-9+.-]*://[^\s\x00:/@]+:([^\s\x00/@]+)@", group=1),
     _d("assigned-secret", S, "Values assigned to names like password, secret, api_key or token",
        r"(?:password|passwd|pwd|secret|client_secret|api[_-]?key|access[_-]?token"
-       r"|auth[_-]?token|refresh[_-]?token|token)[\"']?\s*[:=]\s*[\"']?([^\s\"',;&]{4,})",
+       r"|auth[_-]?token|refresh[_-]?token|token)[\"']?\s*[:=]\s*[\"']?([^\s\x00\"',;&]{4,})",
        flags=re.IGNORECASE, group=1, validate=_assigned_secret_ok),
     _d("card-number", P, "Payment card numbers (prefix and Luhn verified)",
        r"(?<![\d-])\d(?:[ -]?\d){12,18}(?![\d-])", validate=_card_ok),

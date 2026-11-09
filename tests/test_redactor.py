@@ -120,7 +120,7 @@ _log_text = st.lists(
         st.sampled_from(
             ["bob@example.com", "10.20.30.40", "fe80::1:2", "password=hunter22",
              "4111 1111 1111 1111", "https://u:pw1234@db.example",
-             "Authorization: Bearer abcdefgh1", " ", "\n", ":", "@", "."]
+             "Authorization: Bearer abcdefgh1", "token=Zt9qL2xw w", " ", "\n", ":", "@", "."]
         ),
     ),
     max_size=12,
@@ -154,3 +154,14 @@ def test_check_is_clean_after_redaction() -> None:
 def test_second_pass_finds_nothing(text: str) -> None:
     r = redactor()
     assert r.redact(r.redact(text).text).findings == []
+
+
+def test_masked_value_does_not_extend_into_following_words() -> None:
+    out = redactor().redact("GET /api?token=Zt9qL2xw from 198.51.100.23 by x").text
+    assert out.startswith("GET /api?token=[REDACTED:assigned-secret] from 2")
+    assert out.endswith(" by x")
+
+
+def test_nul_in_input_does_not_break_output() -> None:
+    text = "a\x00b password=hunter22 \x00"
+    assert redactor().redact(text).text == "a\x00b password=[REDACTED:assigned-secret] \x00"

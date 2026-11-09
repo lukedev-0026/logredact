@@ -20,9 +20,10 @@ _BLOCK_END = re.compile(r"-----END [A-Z0-9 ]*PRIVATE KEY-----")
 _MAX_RESTARTS = 64
 #: Output of an earlier redaction; never treated as a new finding.
 _MARKER = re.compile(r"\[REDACTED:[a-z0-9-]+\]")
-#: Fills already-matched spans. No detector matches across a line break
-#: except the private-key detector, which runs first.
-_MASK = "\n"
+#: Fills already-matched spans. NUL is not whitespace and no built-in
+#: pattern can match it, so masked text is a hard boundary that patterns
+#: can neither match nor skip over.
+_MASK = "\x00"
 
 
 @dataclass(frozen=True)
@@ -71,7 +72,7 @@ class Redactor:
         """Return non-overlapping matches in ``text``, ordered by position.
 
         Detectors run in priority order. Each one sees the text with earlier
-        matches masked out (replaced by line breaks of the same length), so
+        matches masked out (replaced by NUL characters of the same length), so
         offsets stay valid. Masking creates a boundary where there was none,
         which can expose a value that was glued to the masked one. So after
         any detector masks something, matching restarts from the
@@ -82,7 +83,11 @@ class Redactor:
         restarts = 0
         index = 0
         while index < len(self.detectors):
-            found = [m for m in self.detectors[index].find(masked) if not self._allowed(m.value)]
+            found = [
+                m
+                for m in self.detectors[index].find(masked)
+                if _MASK not in m.value and not self._allowed(m.value)
+            ]
             for match in found:
                 taken.append(match)
                 width = match.end - match.start
