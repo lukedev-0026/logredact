@@ -233,20 +233,22 @@ BUILTIN_DETECTORS: tuple[Detector, ...] = (
     _d("url-credentials", S, "Passwords embedded in URLs (scheme://user:password@host)",
        r"\b[A-Za-z][A-Za-z0-9+.-]*://[^\s:/@]+:([^\s/@]+)@", group=1),
     _d("assigned-secret", S, "Values assigned to names like password, secret, api_key or token",
-       r"(?<![A-Za-z0-9])(?:password|passwd|pwd|secret|client_secret|api[_-]?key|access[_-]?token"
+       r"(?:password|passwd|pwd|secret|client_secret|api[_-]?key|access[_-]?token"
        r"|auth[_-]?token|refresh[_-]?token|token)[\"']?\s*[:=]\s*[\"']?([^\s\"',;&]{4,})",
        flags=re.IGNORECASE, group=1, validate=_assigned_secret_ok),
     _d("card-number", P, "Payment card numbers (prefix and Luhn verified)",
        r"(?<![\d-])\d(?:[ -]?\d){12,18}(?![\d-])", validate=_card_ok),
     _d("email", P, "Email addresses",
-       r"(?<![A-Za-z0-9._%+-])[A-Za-z0-9._%+-]+@(?:[A-Za-z0-9-]+\.)+[A-Za-z]{2,}(?![A-Za-z0-9-])",
+       r"(?<![A-Za-z0-9._%+-])[A-Za-z0-9._%+-]+@(?:[A-Za-z0-9-]+\.)+[A-Za-z]{2,}(?![A-Za-z-])",
        action=Action.PSEUDONYMIZE, kind="email", validate=_email_ok),
+    # IPv6 runs before IPv4 so an embedded IPv4 tail (::ffff:192.0.2.1) stays whole.
+    _d("ipv6", P, "IPv6 addresses (loopback and unspecified are kept)",
+       r"(?<![0-9A-Za-z:.])(?:[0-9A-Fa-f]{0,4}:){2,7}"
+       r"(?:\d{1,3}(?:\.\d{1,3}){3}|[0-9A-Fa-f]{0,4})(?![0-9A-Za-z:]|\.\d)",
+       action=Action.PSEUDONYMIZE, kind="ipv6", validate=_ipv6_ok),
     _d("ipv4", P, "IPv4 addresses (loopback and unspecified are kept)",
        r"(?<![\d.])(?:\d{1,3}\.){3}\d{1,3}(?!\.?\d)",
        action=Action.PSEUDONYMIZE, kind="ipv4", validate=_ipv4_ok),
-    _d("ipv6", P, "IPv6 addresses (loopback and unspecified are kept)",
-       r"(?<![0-9A-Za-z:])[0-9A-Fa-f]{0,4}(?::[0-9A-Fa-f]{0,4}){2,7}(?![0-9A-Za-z:])",
-       action=Action.PSEUDONYMIZE, kind="ipv6", validate=_ipv6_ok),
 )  # fmt: skip
 
 

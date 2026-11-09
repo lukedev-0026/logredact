@@ -112,6 +112,9 @@ def test_url_credentials(text: str, expected: list[str]) -> None:
         ("DB_PASSWORD: 'pa55word!'", ["pa55word!"]),
         ("client_secret=Zx9_Q", ["Zx9_Q"]),
         ("refresh-token = rt.abcdef", ["rt.abcdef"]),
+        ("mysqlrootpassword=abcd1", ["abcd1"]),
+        ("csrftoken=QpZ9x", ["QpZ9x"]),
+        ("4111 1111 1111 1111password=hunter22", ["hunter22"]),
         ("password=***", []),
         ("password=${DB_PASSWORD}", []),
         ("token: null", []),
@@ -180,6 +183,8 @@ def test_ipv4(text: str, expected: list[str]) -> None:
     [
         ("peer fe80::1ff:fe23:4567:890a closed", ["fe80::1ff:fe23:4567:890a"]),
         ("[2a02:6b8::feed:bad]:443", ["2a02:6b8::feed:bad"]),
+        ("mapped ::ffff:198.51.100.4 ok", ["::ffff:198.51.100.4"]),
+        ("fe80::1:210.20.30.40", ["fe80::1:210.20.30.40"]),
         ("::1 and ::", []),
         ("at 12:34:56", []),
         ("mac aa:bb:cc:dd:ee:ff", []),
